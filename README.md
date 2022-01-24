@@ -13,7 +13,7 @@ Use the vManage Swagger interface to find the correct GET and POST URLs:
 
 > git clone https://github.com/dbrown92700/vManagePolicyMgr
 
-3. Recommend using a virtual environment
+2. Recommend using a virtual environment
 
 > cd vManagePolicyMgr
 >
@@ -26,6 +26,7 @@ Use the vManage Swagger interface to find the correct GET and POST URLs:
 > pip install -p requirements
 
 4. Edit list.csv file
+
 5. Run main.py
 
 > python3 main.py
