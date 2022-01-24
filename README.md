@@ -10,8 +10,22 @@ Use the vManage Swagger interface to find the correct GET and POST URLs:
 
 # Basic Use Instructions
 1. Clone repository
-2. Install requirements
+
+> git clone https://github.com/dbrown92700/vManagePolicyMgr
+
+3. Recommend using a virtual environment
+
+> cd vManagePolicyMgr
+>
+> python3 -m venv venv
+> 
+> source venv/bin/activate
+
+3. Install requirements
 
 > pip install -p requirements
 
-3. 
+4. Edit list.csv file
+5. Run main.py
+
+> python3 main.py
