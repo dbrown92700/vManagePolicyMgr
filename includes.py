@@ -17,7 +17,7 @@ __contributors__ = []
 __copyright__ = "Copyright (c) 2012 Cisco and/or its affiliates."
 __license__ = "Cisco Sample Code License, Version 1.1"
 
-vmanage_name = 'jabil-vmanage.sdwan.cisco.com'
-vmanage_user = 'davibrow'
-vmanage_pass = '10-9=One'
+vmanage_name = 'vmanage.sdwan.cisco.com'
+vmanage_user = 'username'
+vmanage_pass = 'password'
 
