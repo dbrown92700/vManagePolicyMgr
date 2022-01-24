@@ -8,3 +8,10 @@ Use the vManage Swagger interface to find the correct GET and POST URLs:
 
 > https://{vmanage}/apidocs
 
+# Basic Use Instructions
+1. Clone repository
+2. Install requirements
+
+> pip install -p requirements
+
+3. 
