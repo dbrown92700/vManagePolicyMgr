@@ -1,0 +1,6 @@
+﻿name,Script_Test,,
+description,test python script,,
+type,tloc,,
+tloc,color,encap,preference
+10.78.251.68,mpls,ipsec,200
+10.1.2.3,biz-internet,gre,100
