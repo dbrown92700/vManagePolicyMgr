@@ -23,32 +23,16 @@ import json
 
 def login():
 
-    ### Gets vManage variables from cookie and returns a vManage login object
     vmanage = rest_api_lib(vmanage_name, vmanage_user, vmanage_pass)
-
     return vmanage
-
-def list_policy_tlocs(list_id = ''):
-
-    vmanage = login()
-    tlocs = vmanage.get_request(f'template/policy/list/tloc/{list_id}')
-    vmanage.logout()
-    return tlocs
-
-def put_policy_tlocs(payload):
-
-    vmanage = login()
-    list_id = vmanage.post_request('template/policy/list/tloc',payload)
-    vmanage.logout()
-    return list_id
 
 def read_list_file(listfile = 'list.csv'):
 
     file = open(listfile)
     payload = {}
-    payload['name'] = file.readline().split(',')[1]
-    payload['description'] = file.readline().split(',')[1]
-    payload['type'] = file.readline().split(',')[1]
+    payload['name'] = file.readline().split(',')[1].rstrip('\n')
+    payload['description'] = file.readline().split(',')[1].rstrip('\n')
+    payload['type'] = file.readline().split(',')[1].rstrip('\n')
     header = file.readline().split(',')
     entries = []
     for line in file.readlines():
@@ -65,8 +49,31 @@ def read_list_file(listfile = 'list.csv'):
 
     return payload
 
-payload = read_list_file()
-print(json.dumps(payload, indent=2))
-list_id = put_policy_tlocs(payload)
-print(list_id)
-print(json.dumps(list_policy_tlocs(list_id['listId'])))
+if __name__ == '__main__':
+
+    # Read in list file
+
+    filename = input("Input filename: ").rstrip('.csv') + '.csv'
+    payload = read_list_file(filename)
+    print(json.dumps(payload, indent=2))
+
+    # Set the right REST call URLs based on the type of list
+
+    if payload['type'] == 'tloc':
+        geturl = 'template/policy/list/tloc'
+        posturl = 'template/policy/list/tloc'
+    elif payload['type'] == 'dataPrefix':
+        geturl = 'template/policy/list/dataprefix'
+        posturl = 'template/policy/list/dataprefix'
+
+    # POST the list to vManage and GET the list to verify
+
+    print(payload['type'])
+
+    vmanage = login()
+    list_id = vmanage.post_request(posturl, payload)['listId']
+    # list_id = put_policy_tlocs(payload)
+    print(list_id)
+    read_list = vmanage.get_request(f'{geturl}/{list_id}')
+    print(json.dumps(read_list, indent=2))
+    vmanage.logout()

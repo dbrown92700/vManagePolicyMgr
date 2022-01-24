@@ -1,0 +1,6 @@
+name,Script_Test4
+description,test python script
+type,dataPrefix
+ipPrefix
+3.3.3.3/32
+1.2.3.4/30
