@@ -38,8 +38,6 @@ policy_elements = {'sla-class': 'SC',\
                    'cflowd-template': 'CT',
                    'vpn-list': 'VL'}
 
-
-
 def list_elements(filename):
 
     # Prints only the top level lines of each policy element
@@ -100,8 +98,7 @@ def policy_to_html(filename):
     # Parse the file for all section elements and put them in a list
     #
 
-    elements = []
-    elements2 = {}
+    elements = {}
 
     for lineNum, line in enumerate(config):
         if line == 'apply-policy\n':
@@ -113,6 +110,7 @@ def policy_to_html(filename):
             nextline = config[lineNum + 1]
             leadernext = nextline.count(' ') - nextline.lstrip(' ').count(' ')
 
+            # Track if we're parsing the lists section of the config
             if leader == 1:
                 if line == ' lists\n':
                     lists_section = True
@@ -125,16 +123,12 @@ def policy_to_html(filename):
                     if (lineSplit[0] in action_sections) or ((not lists_section) and (lineSplit[0] == 'vpn-list')):
                         pass
                     else:
-                        elements.append(lineSplit[1])
-                        if not lineSplit[0] in elements2:
-                            elements2[lineSplit[0]] = []
-                        elements2[lineSplit[0]].append(lineSplit[1])
+                        if not lineSplit[0] in elements:
+                            elements[lineSplit[0]] = []
+                        elements[lineSplit[0]].append(lineSplit[1])
                         config[lineNum] = leader * ' ' + \
                                           f'{lineSplit[0]} <a id="{policy_elements[lineSplit[0]]}:{lineSplit[1]}"><b>{lineSplit[1]}'\
                                           + '</b></a>'
-
-    for thing in elements2:
-        print(f'{thing}:{elements2[thing]}')
 
     #
     # Parse the file and link all references to the elements in the list
@@ -145,11 +139,10 @@ def policy_to_html(filename):
         if line == 'apply-policy\n':
             apply_section = True
 
-        if leader == 1:
-            if line == ' lists\n':
-                lists_section = True
-            else:
-                lists_section = False
+        if line == ' lists\n':
+            lists_section = True
+        else:
+            lists_section = False
 
         if not ('!' in line):   # Skip lines with !
             leader = line.count(' ') - line.lstrip(' ').count(' ')
@@ -158,17 +151,28 @@ def policy_to_html(filename):
             lineSplit = line.lstrip(' ').rstrip('\n').split()
             if (not (leadernext > leader)) or apply_section or ((not lists_section) and (lineSplit[0] == 'vpn-list')): # This is a config element
                 for index, keyword in enumerate(lineSplit):
-                    if keyword in elements:
-                        for element_type in policy_elements:
-                            if element_type in lineSplit[index-1]:
-                                lineSplit[index] = f'<a href="#{policy_elements[element_type]}:{keyword}">{keyword}' + '</a>'
+                    for element_type, instances in elements.items():
+                        if keyword in instances:
+                            if element_type in lineSplit[index - 1]:
+                                lineSplit[
+                                    index] = f'<a href="#{policy_elements[element_type]}:{keyword}">{keyword}' + '</a>'
                                 break
                 config[lineNum] = leader * ' ' + ' '.join(lineSplit)
 
+    #
+    # Create Web Page Policy
+    #
 
-    outfile.write('<html><body>')
-    for line in elements:
-        outfile.write(f'<a href="#{line}">{line}</a><br>\n')
+    outfile.write('<html><body>\n<h1>Policy Elements</h1>\n')
+
+    # Create table of contents for policy elements
+    for element_type, instances in elements.items():
+        outfile.write(f'<h2>{element_type}'+'</h2>\n')
+        for line in instances:
+            outfile.write(f'<a href="#{policy_elements[element_type]}:{line}">{line}</a><br>\n')
+
+    # Write the policy
+    outfile.write('<h1>Policy</h1>\n')
     for index, line in enumerate(config):
         leader = line.count(' ') - line.lstrip(' ').count(' ')
         line = leader * '&nbsp;' * 3 + line.lstrip(' ')
@@ -176,6 +180,7 @@ def policy_to_html(filename):
         outfile.write(f'{index}:{line}'+'<br>\n')
     outfile.write('</html></body>')
     outfile.close()
+
     return elements
 
 def convert_to_yaml(filename):
@@ -220,6 +225,4 @@ if __name__ == '__main__':
 
     elements = policy_to_html(file)
 
-    for item in elements:
-        if elements.count(item) > 1:
-            print(item)
+    print(elements)
