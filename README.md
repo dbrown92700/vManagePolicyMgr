@@ -32,7 +32,13 @@ Use the vManage Swagger interface to find the correct GET and POST URLs:
 
 > pip install -p requirements
 
-4. Edit includes.py for the correct vManage, user, & password information.
+4. Set environmental variable for VMANAGE, VMANAGEUSER, & VMANAGEPASS or the script will prompt for them each time:
+
+Linux/MAC
+> export VMANAGE=vmanage.cisco.com
+
+Windows
+> setx VMANAGE='vmanage.cisco.com'
 
 5. Edit list.csv file.  Note that the script will key in on the "type" field to make the appropriate API call.
 
