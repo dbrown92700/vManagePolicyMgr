@@ -38,7 +38,7 @@ Linux/MAC
 > export VMANAGE=vmanage.cisco.com
 
 Windows
-> set VMANAGE='vmanage.cisco.com'
+> setx VMANAGE='vmanage.cisco.com'
 
 5. Edit list.csv file.  Note that the script will key in on the "type" field to make the appropriate API call.
 
