@@ -18,7 +18,7 @@ __copyright__ = "Copyright (c) 2012 Cisco and/or its affiliates."
 __license__ = "Cisco Sample Code License, Version 1.1"
 
 from vmanage_api import rest_api_lib
-import json, os
+import json, os, sys
 
 def login():
 
@@ -56,18 +56,20 @@ if __name__ == '__main__':
     vmanage_name = input(f"Input vManage Address [Press Enter to use {vmanage_name}]:") or vmanage_name
     vmanage_user = os.getenv('VMANAGEUSER')
     vmanage_user = input(f"Input vManage admin user [Press Enter to use {vmanage_user}]:") or vmanage_user
-    vmanage_pass = os.getenv('VMANAGEPASSWORD')
+    vmanage_pass = os.getenv('VMANAGEPASS')
     vmanage_pass = input(f"Input vManage password [Press Enter to use {vmanage_pass}]:") or vmanage_pass
 
     # Read in list file
 
-    print(f'{vmanage_pass} {vmanage_user} {vmanage_name}')
+    try:
+        filename = sys.argv[1].rstrip('.csv') + '.csv'
+    except:
+        filename = input("Input filename: ").rstrip('.csv') + '.csv'
 
-    exit()
-
-    filename = input("Input filename: ").rstrip('.csv') + '.csv'
     payload = read_list_file(filename)
     print(json.dumps(payload, indent=2))
+
+    exit()
 
     # Set the right REST call URLs based on the type of list
 
