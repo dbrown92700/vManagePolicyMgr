@@ -32,8 +32,12 @@ Use the vManage Swagger interface to find the correct GET and POST URLs:
 
 > pip install -p requirements
 
-4. Edit list.csv file
+4. Edit includes.py for the correct vManage, user, & password information.
 
-5. Run main.py
+5. Edit list.csv file.  Note that the script will key in on the "type" field to make the appropriate API call.
+
+6. Run main.py
 
 > python3 main.py
+
+7. Script will prompt user for the .csv filename.  It will use the local directory unless the full path is specified.  Including the ".csv" is optional.
