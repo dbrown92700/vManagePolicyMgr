@@ -24,7 +24,7 @@ __license__ = "Cisco Sample Code License, Version 1.1"
 
 import sys, yaml, json
 
-action_sections = ['match', 'set', 'action', 'sequence']
+action_sections = ['match', 'set', 'action', 'sequence', 'local-tloc-list']
 policy_elements = {'sla-class': 'SC',\
                    'data-policy': 'DP',\
                    'data-prefix-list': 'DPL',\
@@ -89,7 +89,7 @@ def policy_to_html(filename):
 
     # Read the config into a list "config"
 
-    outfile = open('vsmartpolicy.html', 'w')
+    outfile = open(f'{filename.rstrip(".txt")}.html', 'w')
     file = open(filename)
     config = file.readlines()
     file.close()
@@ -102,6 +102,7 @@ def policy_to_html(filename):
 
     for lineNum, line in enumerate(config):
         if line == 'apply-policy\n':
+            config[lineNum] = '<a id="apply-policy"><b>apply-policy</b></a><br>\n'
             break
         if not ('!' in line):   # Skip lines with !
 
@@ -112,7 +113,7 @@ def policy_to_html(filename):
 
             # Track if we're parsing the lists section of the config
             if leader == 1:
-                if line == ' lists\n':
+                if line.lstrip(' ') == 'lists\n':
                     lists_section = True
                 else:
                     lists_section = False
@@ -139,7 +140,7 @@ def policy_to_html(filename):
         if line == 'apply-policy\n':
             apply_section = True
 
-        if line == ' lists\n':
+        if line.lstrip(' ') == 'lists\n':
             lists_section = True
         else:
             lists_section = False
@@ -149,7 +150,9 @@ def policy_to_html(filename):
             nextline = config[lineNum + 1]
             leadernext = nextline.count(' ') - nextline.lstrip(' ').count(' ')
             lineSplit = line.lstrip(' ').rstrip('\n').split()
-            if (not (leadernext > leader)) or apply_section or ((not lists_section) and (lineSplit[0] == 'vpn-list')): # This is a config element
+            if (not (leadernext > leader))\
+                    or apply_section\
+                    or ((not lists_section) and (lineSplit[0] == 'vpn-list')): # This is a config element
                 for index, keyword in enumerate(lineSplit):
                     for element_type, instances in elements.items():
                         if keyword in instances:
@@ -164,6 +167,7 @@ def policy_to_html(filename):
     #
 
     outfile.write('<html><body>\n<h1>Policy Elements</h1>\n')
+    outfile.write('<h2>Apply Policy Section</h2><a href="#apply-policy">apply-policy</a><br>')
 
     # Create table of contents for policy elements
     for element_type, instances in elements.items():

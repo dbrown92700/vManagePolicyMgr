@@ -17,9 +17,8 @@ __contributors__ = []
 __copyright__ = "Copyright (c) 2012 Cisco and/or its affiliates."
 __license__ = "Cisco Sample Code License, Version 1.1"
 
-from includes import *
 from vmanage_api import rest_api_lib
-import json
+import json, os
 
 def login():
 
@@ -51,7 +50,20 @@ def read_list_file(listfile = 'list.csv'):
 
 if __name__ == '__main__':
 
+    # Get vManage Settings
+
+    vmanage_name = os.getenv('VMANAGE')
+    vmanage_name = input(f"Input vManage Address [Press Enter to use {vmanage_name}]:") or vmanage_name
+    vmanage_user = os.getenv('VMANAGEUSER')
+    vmanage_user = input(f"Input vManage admin user [Press Enter to use {vmanage_user}]:") or vmanage_user
+    vmanage_pass = os.getenv('VMANAGEPASSWORD')
+    vmanage_pass = input(f"Input vManage password [Press Enter to use {vmanage_pass}]:") or vmanage_pass
+
     # Read in list file
+
+    print(f'{vmanage_pass} {vmanage_user} {vmanage_name}')
+
+    exit()
 
     filename = input("Input filename: ").rstrip('.csv') + '.csv'
     payload = read_list_file(filename)
